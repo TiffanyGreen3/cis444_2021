@@ -190,52 +190,6 @@ def buyBook():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    #checkPlacement = request.headers.get("authorization")
-    #print(checkPlacement)
-    #tokenCheck = tokchecking(checkPlacement)
-    #if tokenCheck == False:
-        #return json_response(status='404', msg='Wrong Token')
-
-    #return json_response(jwt=checkPlacement, nameBooks = books_Name_resp, priceBook = books_Price_resp)
-
-
-#def decode_token(checkAToken1):
-    #its_decode = jwt.decode(checkAToken1,JWT_SECRET, algorithms=["HS256"])
-    #strToken = its_decode.get('username')
-    #return strToken
-
-#def tokchecking(checkAToken):
-   #print(checkAToken)
-    #strToken = decode_token(checkAToken)
-    #cur = global_db_con.cursor()
-    #goUsers = "SELECT EXISTS(SELECT username FROM users WHERE username = '" + strToken +"'limit 1);"
-    #cur.execute(goUsers)
-    #r = cur.fetchone()
-    #print(r[0])
-    #if r[0] == True:
-        #return True
-    #return False
-
-
-
-
-
 #test run
 #@app.route('/userTest',  methods=['POST']) #endpoint
 #def userTest():
