@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+	 <style>
+	body{
+		background-image: url("camo.jpg");
+	}
+	h1{
+  		color: white;
+		font-family: "Audiowide", sans-serif;
+		text-shadow: 2px 2px gray ;
+  		font-size: 270%;
+		text-align:center;
+	}
+	h2{
+		color: white;
+                font-family: "Audiowide", sans-serif;
+                text-shadow: 2px 2px gray ;
+                font-size: 300%;
+                text-align:center;
+	}
+	video{
+		
+	}
+
+	</style>
+        <!-- head definitions go here -->
+	<!--<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>-->
+    </head>
+    <body>
+	     <h2> Hello professor! Today is:</h2>
+
+            <h1 id="mytime"></h1>
+
+	<center>
+            <video width="1000" height="500" controls loop
+
+              source src="cool.mp4" type="video/mp4">
+
+            </video>
+	</center>   
+	<script>
+		<!--setInterval( function(){ $('#mytime').html( "Today is " + new Date());}, 500);-->
+	<!--var clockTime = setInterval(time, 1000);-->
+		
+	var clockTime = setInterval(why,1000);
+	function why(){
+			var today = new Date();
+
+			var time = today.toLocaleTimeString();
+		
+			var date = (today.getMonth() + 1) +'/'+ today.getDate() +'/'+ today.getFullYear();
+			var dateTime = date+' '+time;
+			document.getElementById("mytime").innerHTML = dateTime;
+	}
+
+	</script>
+    </body>
+</html>

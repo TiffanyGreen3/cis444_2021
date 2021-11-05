@@ -10,38 +10,123 @@
 
 			alert($('#fname').val());
 			alert($('#lname').val());
+			alert($('#words').serialize());
+			return true;
 
+		}
+		function change_Form(){
+			//alert("Changing");
 			$('#login').hide();
-			$('#books').show();
-			
-			$('#cars').append('<option value="volvo">Thank you Taco</option>')
+			$('#Signup').show();
+			//alert("Changing");
+			return true;
+		}
+		function addNewUser(){
+			alert("Yay New User!");
+			return true;
+		}
+	$(document).ready(function(){
+		$("#Login").click(loginButton);
+	});
+		function loginButton(){
+			alert("The form is submmitting");
+			$.ajax({
+					type:"POST",
+					url:"/userTest", 
+					data: $("#form").serialize(),
+					success: function(data)
+				{ 
+					if(data.jwt == null)
+						alert(data.status + " " + data.msg);
+					else{
+						localStorage.clear();
+						localStorage.setItem('token', data.jwt);
+						//alert(data.jwt);
+						$('#login').hide();
+						$('#books').show();
+                                                placeBooks();
 
-
-			return false;
-
-			if($('#fname').val().length == 0){
-				return false;
-			}else{
-				return true;
-			}
+					}
+				}
+			});
 		}
 
+	
+		function placeBooks()
+		{
+                       alert("COOLIO");
+                        $.ajax({
+                                        type:"GET",
+                                        url:"/getBooks",
+					success: function(data)
+					{
+						alert("number of the length"+data.nameBooks.length);
+						alert(data.nameBooks[0]);
+						alert(data.nameBooks[1]);
+						alert(data.nameBooks[2]);
+						
+							//console.log(data.nameBooks.length );
+							for(var x=0; x<data.nameBooks.length ; x++)
+                                                  		{
+									alert(data.nameBooks[x]);
+									$('#booksList').append($('<option>',{value: data.nameBooks[x],text: 'Name:'+data.nameBooks[x]+':$'+data.priceBook[x]
+									}));
+									alert(data.priceBook[x]);
+                                                                                
+                                                        	}
+						
+					}
+			});
+		}
+			
+                	
+
+ $(document).ready(function(){
+	$("#BuyMe").click(buyingBooks);
+       });
+
+		function buyingBooks()
+		{
+			alert("Welcome");
+			alert("please wait)
+		}	
+
+					
+                                     
+		
+
 	</script>
-            <div id="login">
-	    	<form action="/backp" method="post">
-  			<label for="fname">First name:</label><br>
-  				<input type="text" id="fname" name="fname" value="John"><br>
-  			<label for="lname">Last name:</label><br>
-  				<input type="password" id="lname" name="lname" value="Doe"><br><br>
-  			<input type="submit" value="Signup" onclick="return check_form();">
-		</form>
+		<div id="login">
+			<form id="form">
+                        	<label for="nameUser">UserName:</label><br>
+                                	<input type="text" id="nameUser" name="nameUser" value="John"><br>
+                        	<label for="namePass">Password:</label><br>
+                                	<input type="password" id="wordPass" name="wordPass" value="Doe"><br>
+                         	<input type="button" value="Login" id="Login" >
+				<input type="button" value="Signup" onclick="return change_Form();">
+                	</form>
+            </div>
+
+	    	<div id="Signup"style="display:none">
+		    	<form action="/createPerson" method="post">
+				<label for="namePer">New UserName:</label><br>
+					<input type="text" id="nameP" name="nameP" value="John"><br>
+				<label for="new_Pass">New Password:</label><br>
+					<input type="password" id="new_Pass" name="new_Pass" value="Doe"><br>
+			 	<input type="submit" value="Submit" onclick="return addNewUser();">
+			</form>
 	    </div>
 
 	    <div id="books" style="display:none">
-		    <h1>Buy me</h1>
-		    <select name="cars" id="cars">
-
+		    <h1>Here are the Books</h1>
+		   <!-- <select name="cars" id="cars">-->
+		     <select name= "booksList" id="booksList">
+			    <!--  <option value=""</option>-->
+			     
+			    <!-- <option value="1"</option>-->
+			     <!-- <option value="2"</option>-->
   		    </select>
+		     <input type="button" value="BuyMe" id="BuyMe" >
 	    </div>
 
     </body>

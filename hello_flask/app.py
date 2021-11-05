@@ -4,8 +4,8 @@ import jwt
 
 import datetime
 import bcrypt
-
-
+#import simplejson as json
+from datetime import datetime
 from db_con import get_db_instance, get_db
 
 app = Flask(__name__)
@@ -44,15 +44,16 @@ def hello():
 def back():
     return render_template('backatu.html',input_from_browser=request.args.get('usay', default = "nothing", type = str) )
 
-@app.route('/backp',  methods=['POST']) #endpoint
-def backp():
-    print(request.form)
-    salted = bcrypt.hashpw( bytes(request.form['fname'],  'utf-8' ) , bcrypt.gensalt(10))
-    print(salted)
+#@app.route('/backp',  methods=['POST']) #endpoint
+#def backp():
+#    print(request.form)
+#    salted = bcrypt.hashpw( bytes(request.form['fname'],  'utf-8' ) , bcrypt.gensalt(10))
+#    print(salted)
 
-    print(  bcrypt.checkpw(  bytes(request.form['fname'],  'utf-8' )  , salted ))
+#    print(  bcrypt.checkpw(  bytes(request.form['fname'],  'utf-8' )  , salted ))
 
-    return render_template('backatu.html',input_from_browser= str(request.form) )
+#    return render_template('backatu.html',input_from_browser= str(request.form) )
+
 
 @app.route('/auth',  methods=['POST']) #endpoint
 def auth():
@@ -97,6 +98,152 @@ def hellodb():
     global_db_con.commit()
     return json_response(status="good")
 
+#Assigment 3
+
+@app.route('/checkuser',  methods=['POST']) #endpoint
+def checkuser():
+    print(request.form)
+    jwt_str = jwt.encode({"username" : request.form['fname'],"password" : request.form['lname'] }, JWT_SECRET, algorithm="HS256")
+    #print(  bcrypt.checkpw(bytes(request.form['fname'],  'utf-8' )))
+    return json_response(jwt=jwt_str)
+
+#addUser
+@app.route('/createPerson',  methods=['POST']) #endpoint
+def createPerson ():
+    print(request.form)
+    newP = request.form['nameP']
+    newPas = request.form['new_Pass']
+    salted = bcrypt.hashpw( bytes(request.form['new_Pass'],  'utf-8' ) , bcrypt.gensalt(10))
+    #print(newPas)
+    print(salted)
+
+    submit = "INSERT INTO users(username,password) VALUES('"
+    submit += str (newP)
+    submit += "','"
+    submit += str (salted.decode('utf-8'))
+    submit += "');"
+    print(submit)
+
+    cur = global_db_con.cursor()
+    cur.execute(submit)
+    global_db_con.commit()
+
+    return json_response(status='good')
+
+#authUser
+@app.route('/userTest',  methods=['POST']) #endpoint
+def userTest():
+    print(request.form)
+    #print("++++++++++++++++++++++ ")
+
+    cur = global_db_con.cursor()
+    pName = "select password from users where username ='"
+    pName += request.form['nameUser']
+    pName += "';"
+    #print(pName)
+    cur.execute(pName)
+    r = cur.fetchone()
+    #print(str(r[0]))
+    user_Password = str(r[0])
+    if bcrypt.checkpw(bytes(request.form['wordPass'],'utf-8'), user_Password.encode('utf-8')):
+        jwt_str = jwt.encode({"username" : request.form['nameUser'],"password" : request.form['wordPass'] }, JWT_SECRET, algorithm="HS256")
+       # print("++++++++++++++++++++++")
+       # print(jwt_str)
+        return json_response(jwt = jwt_str)
+    print("Not Valid")
+    return json_response(status='404', msg='Not Valid User')
+
+#Getting the books
+@app.route('/getBooks',  methods=['GET']) #endpoint
+def getBooks():
+
+    print("YAY Vaild")
+    cur = global_db_con.cursor()
+    books_Name_request = "SELECT book_name FROM books;"
+    cur.execute(books_Name_request)
+    books_Name_resp = cur.fetchall()
+    print(books_Name_resp)
+
+    books_Price_request = "SELECT book_price FROM books;"
+    cur.execute(books_Price_request)
+    books_Price_resp = cur.fetchall()
+    print(books_Price_resp)
+    return json_response(nameBooks = books_Name_resp, priceBook = books_Price_resp)
+
+@app.route('/buyBook',  methods=['POST']) #endpoint
+def buyBook():
+    print ("you are buying")
+    list_myBooks= request.form['books_names']
+    print (list_myBooks)
+    purch= datetime.now()
+    dt_string = purch.strftime("%m/%d/%Y %H:%M:%S")
+    print(dt_string)
+
+    #cur = global_db_con.cursor()
+    #update_buy = "update purchases set book_name = '"+list_myBooks+"%' where userName = John;"
+    #cur.execute(update_buy)
+    #list_myBooks= request.form['books']
+    #global_db_con.commit()
+    return render_template('first_form.html',dt_string)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #checkPlacement = request.headers.get("authorization")
+    #print(checkPlacement)
+    #tokenCheck = tokchecking(checkPlacement)
+    #if tokenCheck == False:
+        #return json_response(status='404', msg='Wrong Token')
+
+    #return json_response(jwt=checkPlacement, nameBooks = books_Name_resp, priceBook = books_Price_resp)
+
+
+#def decode_token(checkAToken1):
+    #its_decode = jwt.decode(checkAToken1,JWT_SECRET, algorithms=["HS256"])
+    #strToken = its_decode.get('username')
+    #return strToken
+
+#def tokchecking(checkAToken):
+   #print(checkAToken)
+    #strToken = decode_token(checkAToken)
+    #cur = global_db_con.cursor()
+    #goUsers = "SELECT EXISTS(SELECT username FROM users WHERE username = '" + strToken +"'limit 1);"
+    #cur.execute(goUsers)
+    #r = cur.fetchone()
+    #print(r[0])
+    #if r[0] == True:
+        #return True
+    #return False
+
+
+
+
+
+#test run
+#@app.route('/userTest',  methods=['POST']) #endpoint
+#def userTest():
+#    print(request.form)
+   # print(  bcrypt.checkpw(  bytes(request.form['fname'],  'utf-8' )  , salted ))
+ #   return render_template('backatu.html',input_from_browser= str(request.form) )
+
 
 app.run(host='0.0.0.0', port=80)
+
 
