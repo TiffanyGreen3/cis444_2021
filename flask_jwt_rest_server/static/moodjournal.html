@@ -4,13 +4,14 @@
 	     <script src="https://code.jquery.com/jquery-3.6.0.js" 
 		     integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 	     <script src="/static/cis444.js"></script>
+	     <link rel="stylesheet" href="moodstyle.css">
     </head>
     <body>
 
 	<script>
 		var whyName;
 		$(document).ready(function(){
-			$("#BuyMe").click(buy_book);
+			$("#Submit").click(reason_mood);
 		});
 		function change_Form(){
 			$('#login').hide();
@@ -25,10 +26,10 @@
                                         //this gets called when browser receives response from server
                                         //Set global JWT
                                         //make secure call with the jwt
-                                        //$('#login').hide();
-                                        //$('#Signup').show();
-					get_books();
-					whyName = data.username;
+                                        $('#login').show();
+                                        $('#Signup').hide();
+					
+					
                                 }, "json").fail( function(response) {
                                         //this gets called if the server throws an error
                                         console.log("error");
@@ -49,7 +50,7 @@
 					//make secure call with the jwt
 					//$('#login').hide();
 					//$('#Signup').show();
-					get_books();
+					get_moods();
 					whyName = data.username;
 				}, "json").fail( function(response) {
 					//this gets called if the server throws an error
@@ -59,40 +60,41 @@
 			return false;
 		}
 
-
-		//function get_books(){
+		
+		function get_moods(){
 			 //make secure call with the jwt
-			//secure_get_with_token("/secure_api/get_books", {} , function(data){
-			//		console.log("got books"); 
-			//		console.log(data); 
-			//		$('#books').show();
-			//		for(var x=0; x<data.books_Name_resp.length ; x++)
-                          //                       {
-							//alert(data.nameBooks[x]);
-			//				$('#booksList').append($('<option>',{value: data.books_Name_resp[x],text: 'Name:'+data.books_Name_resp[x]+':$'+data.books_Price_resp[x]
-			//				}));
-							//alert(data.priceBook[x]);
-			//				$('#login').hide();
-                    	//				$('#books').show();
+			secure_get_with_token("/secure_api/get_mood", {} , function(data){
+					//console.log("got books"); 
+					//console.log(data); 
+					//$('#moods').show();
+					for(var x=0; x<data.moods_Name_resp.length ; x++)
+                                                 {
+							//alert(data.moods_Name_resp[x]);
+							$('#moodsList').append($('<option>',{value: data.moods_Name_resp[x],text: 'Name:'+data.moods_Name_resp[x]}));
+
+						
+							$('#login').hide();
+                    					$('#moods').show();
                                                                                
-                          //                       }
-			//		},
-                          //                      function(err){ console.log(err) });
-	//	}
-		//var whyName;
-          //      function buy_book(){
+                                                 }
+					},
+                                                function(err){ console.log(err) });
+		}
+
+                function reason_mood(){
                          //make secure call with the jwt
-	//		alert(whyName)
-	//		alert($('#booksList').val())
+			//alert(whyName)
+			//alert($('#moodsList').val())
+			//alert($('#whymood').val())
 			//alert(date)
-          //              secure_post_with_token("/secure_api/buybooks", {'username':whyName,'buybook_name': $("#booksList").val(),'date_time': new Date($.now())}, 
-	//			function(data){
-	//				alert("Thank You")
+                        secure_post_with_token("/secure_api/moodthings", {'username':whyName,'users_moods': $("#moodsList").val(),'date_time': new Date($.now()),'whymood':$('#whymood').val()}, 
+				function(data){
+					alert("Stay Healthy")
 					//console.log("got books"); 
 					//console.log(data)
-	//			},
-        //                                        function(err){ console.log(err) });
-          //      }
+				},
+                                                function(err){ console.log(err) });
+                }
 
 	</script>
             <div id="login">
@@ -116,14 +118,16 @@
 	    </div>
 	  
 	    <!-- <button id="buybook" onclick="buy_book(1234)" style="display:none" >Buy Book</button>-->
-	   <!-- <div id="books" style="display:none">
-		    <h1>Here are the Books</h1>
+	    <div id="moods" style="display:none">
+		    <h1>Welcome to your mood journal </h1>
 
-		     <select name= "booksList" id="booksList">
+		     <select name= "moodsList" id="moodsList">
 	
-  		    </select>
-		     <input type="button" value="BuyMe" id="BuyMe"  >
-	    </div>-->
+  		    </select><br>
+		    <label for="whymood">write down why do you feel this mood today:</label><br>
+		    <textarea id="whymood" name="whymood" rows="4" cols="50">
+		    </textarea>		
+		     <input type="button" value="Submit" id="Submit"  >
+	    </div>
     </body>
 </html>
-

@@ -80,5 +80,31 @@ def place_buybook (username, buybook_name, date_time):
     cur.execute(receipt)
     global_db_con.commit()
 
+def mood_info (name_mood):
+    cur = global_db_con.cursor()
+    mood_r ="SELECT "
+    mood_r += name_mood
+    mood_r += " FROM moods;"
+    print(mood_r)
 
+    cur = global_db_con.cursor()
+    cur.execute(mood_r)
+    rp  = cur.fetchall()
+    print(rp)
+    return rp
+
+def place_reason (username, users_mood, date_time,whymood):
+    cur = global_db_con.cursor()
+    receipt = "INSERT INTO reason (username, users_moods, date_time,whymood) VALUES( '"
+    receipt += username
+    receipt += "','"
+    receipt += users_mood
+    receipt += "','"
+    receipt += date_time
+    receipt += "','"
+    receipt += whymood
+    receipt += "');"
+    print(receipt)
+    cur.execute(receipt)
+    global_db_con.commit()
 
